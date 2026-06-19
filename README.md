@@ -1,10 +1,9 @@
 # Liminal
 
-> [Add your one-line description here — e.g. "A meditative space for threshold moments."]
+> The Game is What You Say.
 
 **Status: Work in progress. Building in public.**
-The Game is What You Say.
-
+ 
 🟢 **[→ Open Liminal Live](https://jiandamonique.github.io/liminal/index.html)**
 📖 **[→ Read the README / About](https://github.com/jiandamonique/liminal#readme)**
 
@@ -12,13 +11,13 @@ The Game is What You Say.
 
 ## What is Liminal?
 
-[Add your description here — what does Liminal do? Who is it for? What feeling does it create?]
+
 
 ---
 
 ## Who is it for?
 
-[Who is your intended user? e.g. "Anyone navigating transitions — personal, professional, or spiritual."]
+Anyone navigating transitions — personal, professional, or spiritual. Anyone who likes to write, likes journaling, likes bullet journals.
 
 ---
 
