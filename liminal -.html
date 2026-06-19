@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>liminal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#050505;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:2rem 1rem;font-family:"Inconsolata","Courier New",monospace}
+.screen{background:#0d0d0d;border-radius:16px;padding:1.8rem 2rem;width:100%;max-width:560px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.07;border-radius:16px;pointer-events:none;z-index:0;transition:opacity 0.6s}
+.content{position:relative;z-index:1}
+.inner{background:rgba(18,18,17,0.94);border-radius:14px;padding:1.4rem 1.6rem;margin-top:14px;border:0.5px solid #1a1a18}
+.ln{font-size:14px;line-height:1.85}
+.warm{color:#c8c8b8}
+.sp{display:block;height:5px}
+.reveal{color:#252522;transition:color 0.4s;cursor:default}
+.reveal:hover{color:#555550}
+.notice{font-size:11px;color:#1e1e1c;font-style:italic;margin-bottom:14px;padding-bottom:10px;border-bottom:0.5px solid #1c1c1a;transition:color 0.4s;cursor:default}
+.notice:hover{color:#39ff6a}
+.fb{min-height:20px;margin-bottom:12px;font-size:13px;color:#7a9a7a;font-style:italic;opacity:0;transition:opacity 0.4s}
+.fb.show{opacity:1}
+.irow{display:flex;gap:8px;align-items:flex-start;margin:2px 0}
+.sym{color:#252522;font-size:14px;flex-shrink:0;margin-top:2px;transition:color 0.3s}
+.irow:focus-within .sym{color:#555550}
+.field{background:transparent;border:none;border-bottom:0.5px solid #1e1e1c;outline:none;font-family:"Inconsolata","Courier New",monospace;font-size:14px;color:#c8c8b8;width:100%;caret-color:#c8c8b8;line-height:1.85;padding:2px 0;transition:border-color 0.3s}
+.field:focus{border-bottom-color:#3a3a36}
+.field::placeholder{color:#1e1e1c}
+textarea.field{resize:none;font-style:italic;color:#a8a898}
+.hint{font-size:10px;color:#2e2e2a;margin-top:1.1rem;letter-spacing:.04em;font-style:italic;cursor:default;transition:color 0.5s}
+.hint:hover{color:#3a3a36}
+.actions{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap}
+.btn{background:transparent;border:0.5px solid transparent;border-radius:4px;padding:4px 8px;font-family:"Inconsolata","Courier New",monospace;font-size:10px;color:#252522;cursor:pointer;white-space:nowrap;transition:border-color 0.3s,color 0.3s,opacity 0.5s}
+.btn:hover{font-weight:700}
+.save:hover{border-color:#c8c8b8;color:#c8c8b8}
+.export-btn:hover{border-color:#c8c8b8;color:#c8c8b8}
+.release:hover{border-color:#39ff6a;color:#39ff6a}
+.hist-btn:hover{border-color:#555550;color:#c8c8b8}
+.ghost{font-size:11px;color:#1a1a18;font-style:italic;text-align:right;margin-top:1rem;cursor:default;transition:color 0.4s}
+.ghost:hover{color:#3a3a36}
+.maker{font-size:10px;color:#1a1a18;font-style:italic;margin-top:1rem;text-align:right;transition:color 0.4s}
+.maker:hover{color:#3a3a36}
+.maker a{color:inherit;text-decoration:none}
+.img-hint{font-size:10px;color:#3a3a36;font-style:italic;cursor:pointer;transition:color 0.4s}
+.img-hint:hover{color:#3a3a36}
+#img-input{display:none}
+.hist-appear{font-size:10px;color:#1e1e1c;font-style:italic;margin-top:10px;padding-top:10px;border-top:0.5px solid #1a1a18;transition:color 0.4s;cursor:default}
+.hist-appear:hover{color:#555550}
+.history-panel{display:none}
+.nav-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.nav-btn{background:transparent;border:0.5px solid #2a2a26;border-radius:4px;padding:3px 9px;font-family:"Inconsolata","Courier New",monospace;font-size:10px;color:#3a3a36;cursor:pointer;transition:color 0.2s,border-color 0.2s}
+.nav-btn:hover{color:#c8c8b8;border-color:#555550}
+.nav-title{font-size:11px;color:#2a2a26;font-style:italic}
+.entry-card{margin-bottom:10px;padding-bottom:10px;border-bottom:0.5px solid #1a1a18}
+.entry-card:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.edate{font-size:10px;color:#252522;font-style:italic;margin-bottom:2px;transition:color 0.4s;cursor:default}
+.edate:hover{color:#555550}
+.ething{font-size:13px;color:#a8a898}
+.enote{font-size:12px;color:#252522;font-style:italic;line-height:1.6;margin-top:2px}
+.pack-label{font-size:10px;color:#252522;font-style:italic;margin-bottom:10px;padding-bottom:8px;border-bottom:0.5px solid #1a1a18;letter-spacing:.04em}
+
+
+/* typing-triggered action zone */
+.actions.lit .btn{color:#666660}
+.actions.lit .hint-companion{color:#444440}
+.hint.lit{color:#555550}
+
+/* save pulse */
+@keyframes borderPulse{0%{border-color:#1a1a18}40%{border-color:#7a9a7a}100%{border-color:#1a1a18}}
+.inner.pulse{animation:borderPulse 0.8s ease-out}
+@keyframes dimOut{0%{opacity:1;color:#c8c8b8}60%{opacity:0.4;color:#7a9a7a}100%{opacity:0;color:#7a9a7a}}
+.field.saving{animation:dimOut 0.5s ease-out forwards}
+</style>
+</head>
+<body>
+<div class="screen" id="screen">
+  <div class="hero-bg" id="hero"></div>
+  <div class="content">
+    <div class="ln warm" style="font-size:15px;font-weight:500;letter-spacing:.08em">liminal</div>
+    <div class="sp"></div>
+    <div class="reveal ln" id="dl"></div>
+    <div class="reveal ln" id="tl" style="font-style:italic;margin-top:1px"></div>
+
+    <div class="inner">
+      <div id="today-view">
+        <div class="notice">your words only live in this browser. export to save?</div>
+        <div class="fb" id="fb"></div>
+
+        <div class="pack-label" id="pack-label">celebration ＼(＾▽＾)／</div>
+
+        <div class="ln warm" style="font-weight:500">one good thing today</div>
+        <div class="sp"></div>
+        <div class="irow">
+          <span class="sym">&gt;&nbsp;</span>
+          <input class="field" id="f1" type="text" placeholder="" maxlength="140" autocomplete="off" spellcheck="false"/>
+        </div>
+
+        <div style="height:14px"></div>
+        <div class="reveal ln" style="font-style:italic">say more, or don't</div>
+        <div class="sp"></div>
+        <div class="irow">
+          <span class="sym">&gt;&nbsp;</span>
+          <textarea class="field" id="f2" placeholder="this space is yours..." rows="4"></textarea>
+        </div>
+
+        <div class="hint" id="hint-line"></div>
+        <div class="actions" id="action-bar"></div>
+        <div class="hist-appear" id="hist-appear" style="display:none">your entries are here when you want them &nbsp;→</div>
+        <div class="ghost">the game is what you say.</div>
+      </div>
+
+      <div class="history-panel" id="history-view">
+        <div class="nav-bar">
+          <div class="nav-title">my entries</div>
+          <button class="nav-btn" onclick="toggleHist()">← today</button>
+        </div>
+        <div id="entry-list"></div>
+        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn export-btn" onclick="exAll()">[ export all ]&nbsp;&nbsp;-&gt;</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="maker"><a href="https://github.com/jiandamonique" target="_blank">made by jiandamonique &nbsp;->&nbsp; github.com/jiandamonique</a></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:.6rem">
+    <div style="display:flex;gap:10px">
+      <div class="img-hint" onclick="document.getElementById('img-input').click()">[ change image ]</div>
+      <div class="img-hint" id="img-remove" onclick="removeImg()" style="display:none;color:#2e2e2a">[ remove image ]</div>
+    </div>
+  </div>
+  <input type="file" id="img-input" accept="image/*" onchange="loadImg(this)" style="display:none"/>
+</div>
+
+<script>
+// ── prompt packs ──────────────────────────────────────────────
+const PACKS = {
+  celebration: [
+    "what happened today that you want to remember?",
+    "who would you want to tell about today?",
+    "something you did that you're quietly proud of.",
+    "what clicked today?",
+    "a moment worth saving.",
+    "what did you do that was harder than it looked?",
+    "something good that almost went unnoticed.",
+    "what do you want to feel again?",
+    "who made today better?",
+    "what did you pull off?",
+    "something that felt like a small miracle.",
+    "what are you grateful for right now, specifically?",
+    "what would past-you think of today?",
+    "something you built, started, or finished.",
+    "you showed up. what did that make possible?"
+  ],
+  default: [
+    "what was one small thing today?",
+    "what did you notice that nobody else did?",
+    "something that made you exhale.",
+    "one thing you did for yourself, even tiny.",
+    "what do you want to remember about today?",
+    "one moment you'd like to keep.",
+    "what went better than expected?",
+    "something that surprised you.",
+    "what are you looking forward to, even a little?",
+    "one thing that felt true today.",
+    "what did your body need today, and did you give it?",
+    "something you made, fixed, or finished.",
+    "who or what showed up for you today?",
+    "one word for how today felt.",
+    "something that made you feel like yourself."
+  ],
+  tender: [
+    "you don't have to name it. what does it feel like?",
+    "what are you carrying right now?",
+    "what do you wish someone knew?",
+    "what would feel like enough today?",
+    "what are you being hard on yourself about?",
+    "what do you need that you haven't asked for?",
+    "something you're not ready to say out loud yet.",
+    "what would you tell a friend in your exact situation?",
+    "what small thing helped, even a little?",
+    "you made it through today. what did that take?",
+    "what part of this is yours to carry, and what isn't?",
+    "what do you want to let go of?",
+    "what does the kindest version of you say right now?",
+    "is there something here you want to keep, even if it hurts?",
+    "what would tomorrow look like if it were just a little softer?"
+  ]
+};
+
+const PACK_LABELS = {
+  celebration: 'celebration &nbsp;＼(＾▽＾)／',
+  default: 'default &nbsp;｡◕‿◕｡',
+  tender: 'tender &nbsp;(っ˘̩╭╮˘̩)っ'
+};
+
+// ── active pack — change this to switch packs ──────────────────
+const ACTIVE_PACK = 'celebration';
+
+// ── date + tagline ─────────────────────────────────────────────
+const now = new Date();
+const mo = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+const dy = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+document.getElementById('dl').textContent = dy[now.getDay()]+',  '+mo[now.getMonth()]+' '+now.getDate();
+document.getElementById('tl').textContent = now.getDate()%2===0 ? 'the cursor is waiting.' : 'your cursor is waiting.';
+
+// ── daily prompt — rotates by day of year ─────────────────────
+const dayOfYear = Math.floor((now - new Date(now.getFullYear(),0,0)) / 86400000);
+const prompts = PACKS[ACTIVE_PACK];
+const todayPrompt = prompts[dayOfYear % prompts.length];
+document.getElementById('f1').placeholder = todayPrompt;
+document.getElementById('pack-label').innerHTML = PACK_LABELS[ACTIVE_PACK];
+document.getElementById('f1').focus();
+
+// ── storage ────────────────────────────────────────────────────
+const STORE = 'liminal_v1';
+function load(){ try{ return JSON.parse(localStorage.getItem(STORE)||'[]'); }catch(e){ return []; } }
+function save(e){ localStorage.setItem(STORE, JSON.stringify(e)); }
+
+// ── render actions + history hint ──────────────────────────────
+function renderActions(){
+  const entries = load();
+  const n = entries.length;
+  const hint = document.getElementById('hint-line');
+  const bar = document.getElementById('action-bar');
+  const ha = document.getElementById('hist-appear');
+  let buttons = `
+    <button class="btn save" onclick="sv()">[ save ]&nbsp;&nbsp;:)</button>
+    <button class="btn export-btn" onclick="ex()">[ export ]&nbsp;&nbsp;-&gt;</button>
+    <button class="btn release" onclick="rl()">[ let it go ]&nbsp;&nbsp;o/</button>
+  `;
+  if(n >= 3){
+    buttons += `<button class="btn hist-btn" onclick="toggleHist()">[ my entries ]&nbsp;&nbsp;↓</button>`;
+    ha.style.display = 'none';
+  } else if(n > 0){
+    ha.style.display = 'block';
+  } else {
+    ha.style.display = 'none';
+  }
+  hint.innerHTML = '';
+  bar.innerHTML = buttons;
+}
+
+// ── render history ─────────────────────────────────────────────
+function renderHistory(){
+  const entries = load();
+  const el = document.getElementById('entry-list');
+  if(!entries.length){ el.innerHTML='<div style="font-size:12px;color:#252522;font-style:italic">nothing yet.</div>'; return; }
+  el.innerHTML = entries.map(e=>`
+    <div class="entry-card">
+      <div class="edate">${e.date}</div>
+      <div class="ething">${e.thing}</div>
+      ${e.note?`<div class="enote">${e.note}</div>`:''}
+    </div>
+  `).join('');
+}
+
+// ── toggle history ─────────────────────────────────────────────
+function toggleHist(){
+  const tv = document.getElementById('today-view');
+  const hv = document.getElementById('history-view');
+  if(hv.style.display==='block'){ hv.style.display='none'; tv.style.display='block'; }
+  else{ renderHistory(); hv.style.display='block'; tv.style.display='none'; }
+}
+
+// ── feedback ───────────────────────────────────────────────────
+function showFb(msg){
+  const e = document.getElementById('fb');
+  e.classList.remove('show');
+  void e.offsetWidth;
+  e.innerHTML = msg;
+  e.style.color = '#c8c8b8';
+  e.classList.add('show');
+  setTimeout(()=>{ e.style.transition='color 1.2s'; e.style.color='#7a9a7a'; }, 600);
+  setTimeout(()=>{ e.style.transition='opacity 1.5s'; e.style.opacity='0'; e.style.color='#7a9a7a'; }, 3500);
+  setTimeout(()=>{ e.classList.remove('show'); e.style.opacity=''; e.style.transition=''; e.style.color=''; }, 5000);
+}
+
+// ── save ───────────────────────────────────────────────────────
+function sv(){
+  // pulse the card border on save
+  const v = document.getElementById('f1').value.trim();
+  if(!v){ showFb('what was the one thing?&nbsp;&nbsp;(・・ )？'); return; }
+  const n = document.getElementById('f2').value.trim();
+  const entries = load();
+  entries.unshift({
+    date: dy[now.getDay()]+',  '+mo[now.getMonth()]+' '+now.getDate(),
+    thing: v,
+    note: n,
+    pack: ACTIVE_PACK
+  });
+  save(entries);
+  showFb('nice one.&nbsp;&nbsp;｡◕‿◕｡');
+  document.getElementById('f1').value='';
+  document.getElementById('f2').value='';
+  renderActions();
+}
+
+// ── release ────────────────────────────────────────────────────
+function rl(){
+  const v = document.getElementById('f1').value.trim();
+  if(!v){ showFb('nothing here yet.&nbsp;&nbsp;:|'); return; }
+  document.getElementById('f1').value='';
+  document.getElementById('f2').value='';
+  showFb('released.&nbsp;&nbsp;o/&nbsp;&nbsp;godspeed.');
+}
+
+// ── download helper ────────────────────────────────────────────
+function dl(txt, name){
+  const b = new Blob([txt],{type:'text/plain'});
+  const u = URL.createObjectURL(b);
+  const a = document.createElement('a');
+  a.href=u; a.download=name; a.click();
+  URL.revokeObjectURL(u);
+}
+
+// ── export today ───────────────────────────────────────────────
+function ex(){
+  const t = document.getElementById('f1').value.trim();
+  if(!t){ showFb('nothing to export yet.&nbsp;&nbsp;(・・ )？'); return; }
+  const n = document.getElementById('f2').value.trim();
+  const d = document.getElementById('dl').textContent;
+  dl(`liminal\n${d}\n${'─'.repeat(28)}\none good thing: ${t}${n?'\n\n'+n:''}\n\ntake what you need. godspeed.\n\n---\nmade by jiandamonique -> github.com/jiandamonique`, 'liminal-today.txt');
+  showFb('exported.&nbsp;&nbsp;->&nbsp;&nbsp;yours to keep.');
+}
+
+// ── export all ─────────────────────────────────────────────────
+function exAll(){
+  const entries = load();
+  if(!entries.length) return;
+  const txt = entries.map(e=>`${e.date}\n${'─'.repeat(24)}\none good thing: ${e.thing}${e.note?'\n\n'+e.note:''}`).join('\n\n\n');
+  dl(`liminal — all entries\n\n${txt}\n\n---\ntake what you need. godspeed.\nmade by jiandamonique -> github.com/jiandamonique`, 'liminal-all.txt');
+}
+
+// ── hero image ─────────────────────────────────────────────────
+function loadImg(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('hero').style.backgroundImage=`url(${e.target.result})`;
+    
+    localStorage.setItem('liminal_hero', e.target.result);
+  };
+  reader.readAsDataURL(file);
+}
+
+const savedHero = localStorage.getItem('liminal_hero');
+if(savedHero){
+  document.getElementById('hero').style.backgroundImage=`url(${savedHero})`;
+  
+}
+
+
+// illuminate actions while typing, settle when done
+let settleTimer;
+function onType(){
+  document.querySelectorAll('.btn').forEach(b=>{
+    b.style.color='#888882';
+    b.style.transition='color 0.2s';
+  });
+
+  clearTimeout(settleTimer);
+  settleTimer = setTimeout(()=>{
+    document.querySelectorAll('.btn').forEach(b=>{
+      b.style.color='#252522';
+    });
+
+  }, 1800);
+}
+document.getElementById('f1').addEventListener('input', onType);
+document.getElementById('f2').addEventListener('input', onType);
+
+// ── init ───────────────────────────────────────────────────────
+renderActions();
+</script>
+</body>
+</html>
