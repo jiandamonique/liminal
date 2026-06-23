@@ -13,9 +13,7 @@
 
 Liminal is a private daily journaling game that asks you one question: *what was one good thing today?*
 
-Once a day, a prompt appears — pulled from a rotating pack of fifteen — and you write into it. That's the whole game. You can save your entry to come back to, export it as a plain text file to keep forever, or let it go entirely. Nothing leaves your device. No account required.
-
-The name fits. It lives at the threshold: between a to-do app and a diary, between holding on and letting go, between the day you had and the one you're stepping into.
+Once a day it gives you one prompt — "one good thing" — pulled from rotating packs (celebration, tender, default), and you write into it. You can save your entry to come back to, export it as a plain text file to keep forever, or let it go entirely Account/signin is not required. Dark minimal terminal aesthetic with an optional personal background image. The name is eponymous: it lives at the threshold between a to-do app and a diary, between holding on and letting go...between the day you had and the one you're stepping into.
 
 ---
 
