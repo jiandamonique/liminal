@@ -51,12 +51,6 @@ Liminal uses your browser's local storage. Nothing is sent anywhere. That means:
 
 ---
 
-## What it isn't
-
-Not a streak tracker. Not a subscription. Not connected to a server. Not analyzing your entries. Not sending notifications. Not storing anything outside your own browser.
-
----
-
 ## Built with
 
 Vanilla HTML, CSS, and JavaScript. One file. No frameworks, no dependencies, no build step. Runs anywhere you can open a browser.
